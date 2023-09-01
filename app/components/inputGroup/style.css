@@ -1,0 +1,38 @@
+.inputGroup {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 1em 0 1em 0;
+    position: relative;
+  }
+  
+  .inputGroup input {
+    font-size: 100%;
+    padding: 0.6em;
+    outline: none;
+    border: 3px solid rgb(243, 253, 255);
+    background-color: rgba(255, 255, 255, 0.288);
+    border-radius: 20px;
+    width: 100%;
+  }
+  
+  .inputGroup label {
+    font-size: 100%;
+    position: absolute;
+    left: 0;
+    padding: 0.8em;
+    margin-left: 0.5em;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    color: rgb(214, 252, 253);
+  }
+  
+  .inputGroup :is(input:focus, input:valid)~label {
+    transform: translateY(-80%)  scale(1.0);
+    margin: 0em;
+    margin-left: 1.3em;
+    padding: 0.6em;
+    color: white;
+  }
+  
+  .inputGroup :is(input:focus, input:valid) {
+    border-color: rgb(156, 245, 248);
+  }
