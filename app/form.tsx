@@ -18,50 +18,52 @@ export const Form = ({initial}: Prop) => {
     const changeNome = (e: ChangeEvent<HTMLInputElement>) =>{
         const nomeChanged = e.target.value;
         setName(nomeChanged);
-        console.log(name);
 
     }
     const changeEmail = (e: ChangeEvent<HTMLInputElement>) =>{
         const emailChanged = e.target.value;
         setEmail(emailChanged);
-        console.log(email);
     }
     const changeCPF = (e: ChangeEvent<HTMLInputElement>) =>{
         const CPFChanged = e.target.value;
         setCPF(CPFChanged);
-        console.log(CPF);
     }
     const changeTelefone = (e: ChangeEvent<HTMLInputElement>) =>{
         const telefoneChanged = e.target.value;
         setPhone(telefoneChanged);
-        console.log(phone);
     }
 
     const formRef = useRef<HTMLFormElement | null>(null);
 
     const clearFields = () => {
         setName('');
+        setEmail('');
+        setCPF('');
+        setPhone('');
     }
 
     
     const Cadastrar = async () => {
         if (
-            name.length > 0 &&
-            email.length > 0 &&
-            CPF.length > 0 &&
-            phone.length > 0
+            name.length >= 3 &&
+            email.length >= 13 &&
+            CPF.length >= 11 &&
+            phone.length >= 8
          ){
             try {
-                let json = await Api.CreatePerson(
+                let response = await Api.CreatePerson(
                     name,
                     email,
                     CPF,
                     phone
                 );
-                setFillCorretly(1);
-                console.log(json);
-                
-                formRef.current?.reset();
+                console.log(response)
+                if (response === 200) {
+                    setFillCorretly(1);
+                } else if (response === 409){
+                    setFillCorretly(3);
+                }
+                clearFields();
             }
             catch(error){
                 console.log('Erro na solicitação:', error);
@@ -73,19 +75,22 @@ export const Form = ({initial}: Prop) => {
     }
 
     return(
-        <form ref={formRef} className="flex flex-col pb-4 justify-around items-center w-full md:w-3/4 rounded-lg bg-white/20">
-            <h1 className="text-xl md:text-3xl font-semibold">Preencha o Formulário</h1>
+        <form ref={formRef} className="flex flex-col pb-4 justify-around items-center w-full lg:w-3/4 rounded-lg bg-white/20">
+            <h1 className="text-4xl md:text-4xl text-center font-semibold md:px-2">Preencha o Formulário</h1>
             <InputGroup name="Nome" value={name} onChange={changeNome}/>
             <InputGroup name="E-mail" value={email} onChange={changeEmail}/>
             <InputGroup name="CPF" value={CPF} onChange={changeCPF}/>
             <InputGroup name="Telefone" value={phone} onChange={changeTelefone}/>
             {fillCorretly === 1 &&
-                <h3 className="text-xl text-green-300">Cadastro efetuado com sucesso!</h3>            
+                <h3 className="text-xl w-full text-center text-green-300">Cadastro efetuado com sucesso!</h3>            
             }
             {fillCorretly === 2 &&
-                <h3 className="text-xl text-red-300">Preencha todos os campos do formulário!</h3>            
+                <h3 className="text-xl w-full text-center text-red-300">Preencha todos os campos do formulário!</h3>            
             }
-            <div className="flex justify-center gap-16 w-full">
+            {fillCorretly === 3 &&
+                <h3 className="text-xl w-full text-center text-red-300">CPF ja cadastrado!</h3>            
+            }
+            <div className="flex justify-around  w-full">
                 <Btn onClick={initial} name="Retornar"/>
                 <Btn onClick={Cadastrar} name="Cadastrar"/>
             </div>

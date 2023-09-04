@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import axios from "axios";
 
 const Person: string | null = 'https://localhost:5001/api/Person';
@@ -16,14 +17,19 @@ export const Api = {
                 email: email,
                 CPF: CPF,
                 phone: phone,
-            }
-            );
-            debugger
-            const data = response.data;
-            return data;
+            });
+        
+            return response.status;
         } catch (error) {
-            console.log(error);
-            return [];
+            const axiosError = error as AxiosError;
+            if (axiosError.response && axiosError.response.status === 409) {
+                console.log(axiosError.response?.status);
+                return axiosError.response?.status;
+            } else {
+                console.log('Erro desconhecido');
+                return [];
+            }
         }
+        
     },
 }
